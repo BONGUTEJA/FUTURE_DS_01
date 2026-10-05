@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Executive Sales Performance Dashboard | Future Interns DS-01</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --primary: #3b82f6;
+      --accent: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --purple: #8b5cf6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      padding: 24px;
+      line-height: 1.5;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #60a5fa;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+    h1 { font-size: 1.75rem; font-weight: 700; }
+    .subtitle { color: var(--text-muted); font-size: 0.9rem; }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .kpi-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+    }
+    .kpi-blue::after { background: var(--primary); }
+    .kpi-green::after { background: var(--accent); }
+    .kpi-purple::after { background: var(--purple); }
+    .kpi-amber::after { background: var(--warning); }
+    .kpi-title { font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 0.05em; }
+    .kpi-val { font-size: 1.85rem; font-weight: 800; margin: 8px 0 4px; }
+    .kpi-meta { font-size: 0.75rem; color: var(--text-muted); }
+    .positive { color: var(--accent); }
+    .negative { color: var(--danger); }
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 1024px) {
+      .charts-grid { grid-template-columns: 1fr; }
+    }
+    .chart-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .chart-title { font-size: 1.05rem; font-weight: 700; }
+    .chart-subtitle { font-size: 0.8rem; color: var(--text-muted); }
+    .recommendations {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 24px;
+    }
+    .recommendations h2 { font-size: 1.25rem; margin-bottom: 16px; color: #60a5fa; }
+    .rec-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+    .rec-item {
+      background: rgba(255,255,255,0.02);
+      border-left: 3px solid var(--primary);
+      padding: 14px 16px;
+      border-radius: 0 8px 8px 0;
+    }
+    .rec-item h3 { font-size: 0.95rem; margin-bottom: 6px; font-weight: 600; }
+    .rec-item p { font-size: 0.82rem; color: var(--text-muted); }
+    footer {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div>
+      <span class="badge">Future Interns • Data Science Task 01</span>
+      <h1>Business Sales Performance Analytics Dashboard</h1>
+      <p class="subtitle">Multi-Year Comprehensive Commercial Audit (2023 – 2025) • Omnichannel Retail Operations</p>
+    </div>
+    <div style="text-align: right;">
+      <span style="font-size: 0.8rem; color: var(--text-muted);">Status: Production Audit</span><br>
+      <span style="font-size: 0.85rem; font-weight: 600; color: #10b981;">● Live Cleaned Dataset</span>
+    </div>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="kpi-grid">
+    <div class="kpi-card kpi-blue">
+      <div class="kpi-title">Total Net Revenue</div>
+      <div class="kpi-val">$7.20M</div>
+      <div class="kpi-meta"><span class="positive">↑ 12.8% YoY</span> vs baseline target</div>
+    </div>
+    <div class="kpi-card kpi-green">
+      <div class="kpi-title">Gross Operating Profit</div>
+      <div class="kpi-val">$2.17M</div>
+      <div class="kpi-meta">Net margin: <span class="positive">30.1%</span> of net sales</div>
+    </div>
+    <div class="kpi-card kpi-purple">
+      <div class="kpi-title">Total Orders Fulfilled</div>
+      <div class="kpi-val">6,200</div>
+      <div class="kpi-meta">Across 4 major US geographic regions</div>
+    </div>
+    <div class="kpi-card kpi-amber">
+      <div class="kpi-title">Average Order Value (AOV)</div>
+      <div class="kpi-val">$1,161</div>
+      <div class="kpi-meta">850 active unique corporate/consumer accounts</div>
+    </div>
+  </div>
+
+  <!-- CHARTS SECTION 1 -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Monthly Revenue & Profit Trajectory</div>
+          <div class="chart-subtitle">36-Month longitudinal trend (Jan 2023 – Dec 2025)</div>
+        </div>
+      </div>
+      <div style="height: 320px;">
+        <canvas id="monthlyTrendChart"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Revenue by Product Category</div>
+          <div class="chart-subtitle">Share of commercial sales volume</div>
+        </div>
+      </div>
+      <div style="height: 320px; display: flex; align-items: center; justify-content: center;">
+        <canvas id="categoryShareChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHARTS SECTION 2 -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Subcategory Profit Margin Distribution (%)</div>
+          <div class="chart-subtitle">Identifying high-margin drivers vs margin-bleed loss leaders</div>
+        </div>
+      </div>
+      <div style="height: 320px;">
+        <canvas id="marginBySubcatChart"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Regional Performance Balance</div>
+          <div class="chart-subtitle">Net sales vs realized profit ($k)</div>
+        </div>
+      </div>
+      <div style="height: 320px;">
+        <canvas id="regionalChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIONABLE RECOMMENDATIONS -->
+  <div class="recommendations">
+    <h2>Strategic Insights & Executive Recommendations</h2>
+    <div class="rec-list">
+      <div class="rec-item">
+        <h3>1. Restructure Heavy Discounts on Furniture</h3>
+        <p>Tables (3.66% margin) and Bookcases (3.79% margin) are suffering from deep discount bleed. Implement an automated discount ceiling at 15% for Furniture to protect bottom-line profits.</p>
+      </div>
+      <div class="rec-item">
+        <h3>2. Scale Technology Product Bundling</h3>
+        <p>Technology generates 69.1% ($4.97M) of gross revenue with healthy 32%+ margins. Bundle top-selling laptops (MacBook Pro, ThinkPad X1) with high-margin peripherals and office accessories.</p>
+      </div>
+      <div class="rec-item">
+        <h3>3. Optimize Central Region Distribution Costs</h3>
+        <p>While the East ($555k profit) and South ($563k profit) lead in profitability, the Central region lags at $494k. Audit fulfillment logistics and supply chain freight costs in the Midwest.</p>
+      </div>
+      <div class="rec-item">
+        <h3>4. Expand High-Margin Office Supplies</h3>
+        <p>Office supplies (Binders, Storage, Art, Paper) boast industry-leading margins of ~40%. Leverage targeted corporate subscriptions to turn these into recurring, predictable margin boosters.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    // Ingest data from embedded JSON metrics
+    const metrics = {
+      "monthly_labels": ["Jan 23","Feb 23","Mar 23","Apr 23","May 23","Jun 23","Jul 23","Aug 23","Sep 23","Oct 23","Nov 23","Dec 23","Jan 24","Feb 24","Mar 24","Apr 24","May 24","Jun 24","Jul 24","Aug 24","Sep 24","Oct 24","Nov 24","Dec 24","Jan 25","Feb 25","Mar 25","Apr 25","May 25","Jun 25","Jul 25","Aug 25","Sep 25","Oct 25","Nov 25","Dec 25"],
+      "monthly_revenue": [215.7, 189.7, 177.1, 200.1, 193.6, 151.9, 217.8, 227.7, 219.5, 193.6, 250.2, 221.2, 221.5, 133.3, 190.7, 177.9, 183.4, 152.2, 217.1, 177.1, 209.7, 175.7, 197.9, 182.4, 203.6, 180.5, 225.7, 200.6, 213.3, 197.5, 191.6, 202.5, 205.8, 235.2, 211.3, 251.0],
+      "monthly_profit": [65.1, 57.2, 52.3, 63.4, 56.4, 47.3, 63.7, 65.6, 67.9, 59.5, 69.7, 70.3, 70.6, 40.2, 59.1, 53.1, 54.2, 44.0, 67.7, 49.3, 61.0, 53.8, 63.2, 54.4, 62.0, 54.7, 66.5, 60.8, 61.3, 56.6, 56.5, 61.8, 64.6, 73.1, 61.4, 77.8],
+      "categories": ["Technology", "Furniture", "Office Supplies"],
+      "category_sales": [4972.6, 1728.9, 494.1],
+      "subcategories": ["Tables", "Bookcases", "Accessories", "Phones", "Copiers", "Laptops", "Furnishings", "Appliances", "Binders", "Art", "Storage", "Paper", "Chairs"],
+      "subcat_margins": [3.66, 3.79, 32.52, 32.59, 32.67, 32.73, 39.85, 39.92, 39.98, 40.22, 40.24, 40.48, 40.77],
+      "regions": ["Central", "East", "South", "West"],
+      "regional_revenue": [1729.3, 1846.9, 1814.0, 1805.4],
+      "regional_profit": [493.6, 555.3, 562.9, 554.3]
+    };
+
+    // 1. Monthly Trend Chart
+    new Chart(document.getElementById('monthlyTrendChart'), {
+      type: 'line',
+      data: {
+        labels: metrics.monthly_labels,
+        datasets: [
+          {
+            label: 'Net Revenue ($k)',
+            data: metrics.monthly_revenue,
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            fill: true,
+            tension: 0.35,
+            borderWidth: 2,
+            pointRadius: 2.5
+          },
+          {
+            label: 'Net Profit ($k)',
+            data: metrics.monthly_profit,
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            fill: true,
+            tension: 0.35,
+            borderWidth: 2,
+            pointRadius: 2.5
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: '#9ca3af', font: { family: 'Plus Jakarta Sans' } } }
+        },
+        scales: {
+          x: { ticks: { color: '#9ca3af', maxTicksLimit: 12 }, grid: { color: 'rgba(255,255,255,0.05)' } },
+          y: { ticks: { color: '#9ca3af', callback: v => '$' + v + 'k' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+        }
+      }
+    });
+
+    // 2. Category Share Doughnut
+    new Chart(document.getElementById('categoryShareChart'), {
+      type: 'doughnut',
+      data: {
+        labels: metrics.categories,
+        datasets: [{
+          data: metrics.category_sales,
+          backgroundColor: ['#3b82f6', '#f59e0b', '#10b981'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: '#9ca3af' } }
+        },
+        cutout: '68%'
+      }
+    });
+
+    // 3. Subcategory Profit Margins Horizontal Bar
+    new Chart(document.getElementById('marginBySubcatChart'), {
+      type: 'bar',
+      data: {
+        labels: metrics.subcategories,
+        datasets: [{
+          label: 'Profit Margin (%)',
+          data: metrics.subcat_margins,
+          backgroundColor: metrics.subcat_margins.map(m => m < 10 ? '#ef4444' : '#10b981'),
+          borderRadius: 4
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: '#9ca3af', callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+          y: { ticks: { color: '#9ca3af' }, grid: { display: false } }
+        }
+      }
+    });
+
+    // 4. Regional Performance Bar Chart
+    new Chart(document.getElementById('regionalChart'), {
+      type: 'bar',
+      data: {
+        labels: metrics.regions,
+        datasets: [
+          {
+            label: 'Revenue ($k)',
+            data: metrics.regional_revenue,
+            backgroundColor: '#3b82f6',
+            borderRadius: 4
+          },
+          {
+            label: 'Profit ($k)',
+            data: metrics.regional_profit,
+            backgroundColor: '#10b981',
+            borderRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: '#9ca3af' } } },
+        scales: {
+          x: { ticks: { color: '#9ca3af' }, grid: { display: false } },
+          y: { ticks: { color: '#9ca3af', callback: v => '$' + v + 'k' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
